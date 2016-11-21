@@ -10,7 +10,7 @@ Brick(x coordinate of top left corner, y coordinate of top left corner, height, 
 
 --------------------------------------------------------------------------------------------------
 Now we go to the BrickShooter class which has everything else.
-After the comments, the imports, and the "public class BrickShooter extends JPanel implements KeyListener, ActionListener, Runnable {",
+After the comments, the imports, and the "public class BrickShooter extends JPanel implements KeyListener, Runnable {",
 you'll find a bunch of variables. 
   Variables: 
   - screenWidth: Preferrably a multiple of 300 due to the following variables that derive from screenWidth.  Minimum is 300 and Maximum is 6000.
@@ -140,10 +140,90 @@ The run() method is where all the legit action happens. Each round represents 1 
 				- Gun.x += screenWidth / 300: Gun moves right by a 300th of the screenWidth.
 				- left = false: left becomes false just incase player presses both right and left at the same time.
 			- if (Gun.x <= 0) Gun.x = 0: If the x coordinate of the x value ends up becoming less than 0, bring it back to 0. 0 is the left boundary of the x coordinate.
-			- if (Gun.x >= screenWidth - gunWidth) Gun.x = screenWidth - gunWidth: If the x coordinate of the x value ends up becoming less than 0, bring it back to 0. 0 is the left boundary of the x coordinate.
-  
-  
-  
+			- if (Gun.x >= screenWidth - gunWidth) Gun.x = screenWidth - gunWidth: If the x coordinate of the x value ends up becoming greater than screenWidth - gunWidth, bring it back to screenWidth - gunWidth. screenWidth - gunWidth is the right boundary of the x coordinate.
+			- for (int i = 0; i < Bricks.length; i++): For each brick
+				- for (int i = 0; i < Bullet.length; i++): For each bullet
+					- if (Bullet[j] != null && Bricks[i] != null): If the brick and bullet exists,
+						- if (Bricks[i].intersects(Bullet[j])): If the brick and bullet intersect
+							- Bricks[i].lives--: The brick loses a life.
+							- Bullet[j] = null: The bullet is gone.
+							- if (Bricks[i].lives == 0): If the brick has no lives,
+								- Bricks[i] = null: The brick disappears.
+								- count++: Broken brick count increases by one.
+				- if (Bricks[i] != null): If the brick exists, 
+					- if (Bricks[i].y + Bricks[i].height >= screenHeight): if the brick bottom is below the bottom boundary, 
+						- brickFellDown = true: Loss condition boolean becomes true.
+						- status = "feelsbadman": Game state becomes "feelsbadman". This will be printed in the paint() method and player will see this.
+						- repaint(): Runs paint().
+			- if (count == Bricks.length): If broken brick count is equal to the original number of bricks,
+				- bricksOver = true: Win condition boolean becomes true.
+					status = "nice": Game state becomes "nice". This will be printed in the paint() method and player will see this.
+					repaint(): Runs paint().
+			- repaint(): final repaint().
+			- try { Thread.sleep(10); } catch (Exception ex) {}: Takes inputs like from keys and stuff. You will see this try catch thing again. This one is specifically for when the game is not paused. 
+			------this is the end of the inside while(!pause) loop--------
+		- repaint(): The only repaint when the game is paused.
+		- try { Thread.sleep(10); } catch (Exception ex) {}: Takes inputs like from keys and stuff. This is the second try and catch. This one is outside the while(!pause) loop so this can take inputs when the game is paused. 
+
+That was the run. The hardest part of this whole program. Lets go next to the createBricks() method.
+	- for (int i = 0; i < Bricks.length; i++): This method is just one for loop for each brick in the Bricks array.
+		- Bricks[i] = new Brick(i % 15 * brickWidth, i / 15  * brickHeight, brickHeight, brickWidth, 3 - (i / 15)): initializes each brick. 
+			Note: The x value, i % 15 * brickWidth, is written like that so each new brick is 1 brickWidth to the right of the last one.
+			Note: The y value, i / 15  * brickHeight, stays the same for 15 bricks, then drops down by 1 brickHeight for the next row. 
+			Note: The brickHeight and brickWidth were set earlier. 
+			Note: The lives value is always a maximum of 3. The top row will always start with 3 lives, the second row will have the 2 lives, the third row will have 1 life, and the following rows will have 0 or negative lives. We will work around this in the next line. 
+			- if (Bricks[i].lives < 1) Bricks[i].lives = 1: If a brick has less than 1 life, set it equal to 1 life.
+
+The next is restart(). This method only runs when the Enter key is pressed after a game has started(when gameStarted = true).
+	- requestFocus(true): Idk.
+	- initializeVariables(): Calls on initializeVariables() so all variables reset. 
+	- createBricks(): Makes bricks.
+	- repaint(): Hopefully this is self explanatory.
+	
+The next 4 methods are all keyListener related methods. Anything implementing keyListener(which this game is) must have these methods even if they are empty methods that do nothing.
+keyTyped() does nothing.
+keyPressed(KeyEvent e) only runs when the keyEvent e was a pressing of a key instead of releasing.
+	- int keyCode = e.getKeyCode(): set KeyCode to be keyCode of the event e.
+	- if (!pause): These key events are only happening when the game isn't paused: 
+		- if (keyCode == KeyEvent.VK_LEFT) left = true: if the pressed key is left, make left true.
+		- if (keyCode == KeyEvent.VK_RIGHT) right = true: if the pressed key is right, make right true.
+		- if ((keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_SPACE)): Iff the pressed key is up OR space, 
+			- if (Bullet[(shotCount) % Bullet.length] == null: If the next bullet trying to fire doesn't exist,
+				- Bullet[(shotCount) % Bullet.length] = new Rectangle(Gun.x + (Gun.width / 2), screenHeight - Gun.height, bulletSize, bulletSize): Make a new bullet in the array.
+				- shotCount++: shotCount increases by 1.
+  - if (keyCode == KeyEvent.VK_1 ~ 5) dropCountRate = screenHeight / 2 ~ screenHeight * 3 / 2:  The keys 1 ~ 5 will set the dropCountRate to various rates. 
+	- if (keyCode == KeyEvent.VK_ENTER && gameStarted) this.restart(): If you press enter after the game started, run restart().
+	- if (keyCode == KeyEvent.VK_P): If key is P, 
+			if (poweredUp) poweredUp = false: If poweredUp, cancel power up.
+			else poweredUp = true: If not, turn on power up.
+	- if (keyCode == KeyEvent.VK_SHIFT && !controls && !bricksOver && !brickFellDown): If you press shift while the controls are off, and the game isn't over yet, 
+		- if (pause) pause = false; else pause = true: Toggle pause.
+		- gameStarted = true: Start the game.
+	- if (keyCode == KeyEvent.VK_C && pause): If C is pressed during a pause, 
+		- if (controls) controls = false; else controls = true: toggle controls.
+
+THE FINAL METHOD KEYRELEASE()
+	- int keyCode = e.getKeyCode(): set KeyCode to be keyCode of the event e.
+	- if (keyCode == KeyEvent.VK_LEFT) left = false: if the released key is left, make left false.
+	- if (keyCode == KeyEvent.VK_RIGHT) right = false: if the released key is right, make right false.
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
   
   
   
