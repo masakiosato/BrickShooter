@@ -14,7 +14,7 @@ Controls:
 	- Enter: Restart game.
 	- P: Power up toggle (Ball speeds up).
 	- C: Show Controls.
-	- 1~6: Level Selection.
+	- 1~5: Level Selection.
  */
 
 import java.awt.Color;
@@ -39,7 +39,7 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 	//board size. try to keep screenWidth a multiple of 300 min = 300, max = 6000
 	static int screenWidth = 900, screenHeight = screenWidth * 2 / 3;
 	//movement keys
-	static boolean right = false, left = false;
+	boolean right = false, left = false;
 	//gun dimensions
 	int gunWidth = screenWidth / 10;
 	int gunHeight = gunWidth / 5;
@@ -65,7 +65,7 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 	//count of broken bricks
 	int count = 0;
 	//bricks dropping rate. When brickDrop is higher, the game is harder. This can act as levels.
-	int brickDrop = 4000 / screenHeight, dropCount = 0;
+	int dropCount = 0, dropCountRate = screenHeight / 2;
 	//"win" or "lose"
 	String status;
 	//start the game paused
@@ -161,11 +161,11 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 					g.drawString("Shift: Pause/Unpause game.", 70, 160);
 					g.drawString("Enter: Restart game.", 70, 190);
 					g.drawString("P: Power up toggle (Ball speeds up).", 70, 220);
-					g.drawString("1~6: Level Selection.", 70, 250);
+					g.drawString("1~5: Level Selection.", 70, 250);
 					g.drawString("Press C to go back.", 70, 280);
 				}
 				else {
-					String level = "Current level: " + (((4000 - brickDrop * screenHeight) / 680) + 1);
+					String level = "Current level: " + ((dropCountRate * 4 / screenHeight) - 1);
 					if (gameStarted) { //if the game already started, just say pause
 						g.drawString("Paused", 70, 70);
 						g.drawString("Press shift to continue.", 70, 100);
@@ -201,8 +201,8 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 			
 			while (!pause) { //in game
 				//bricks falling
-				dropCount++;
-				if (dropCount >= brickDrop) {
+				dropCount += dropCountRate;
+				if (dropCount >= 1200) {
 					dropCount = 0;
 					for (int i = 0; i < Bricks.length; i++) {
 						if (Bricks[i] != null) {
@@ -296,7 +296,7 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 		brickFellDown = false;
 		bricksOver = false;
 		count = 0;
-		brickDrop = 4000 / screenHeight;
+		dropCountRate = 100;
 		status = null;
 		pause = true;
 		poweredUp = false;
@@ -318,12 +318,11 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 				}
 			}
 		}
-		if (keyCode == KeyEvent.VK_1) brickDrop = 4000 / screenHeight;
-		if (keyCode == KeyEvent.VK_2) brickDrop = 3320 / screenHeight;
-		if (keyCode == KeyEvent.VK_3) brickDrop = 2640 / screenHeight;
-		if (keyCode == KeyEvent.VK_4) brickDrop = 1960 / screenHeight;
-		if (keyCode == KeyEvent.VK_5) brickDrop = 1280 / screenHeight;
-		if (keyCode == KeyEvent.VK_6) brickDrop = 600 / screenHeight;
+		if (keyCode == KeyEvent.VK_1) dropCountRate = screenHeight / 2;
+		if (keyCode == KeyEvent.VK_2) dropCountRate = screenHeight * 3 / 4;
+		if (keyCode == KeyEvent.VK_3) dropCountRate = screenHeight;
+		if (keyCode == KeyEvent.VK_4) dropCountRate = screenHeight * 5 / 4;
+		if (keyCode == KeyEvent.VK_5) dropCountRate = screenHeight * 3 / 2;
 		if (keyCode == KeyEvent.VK_ENTER && gameStarted) this.restart();
 		if (keyCode == KeyEvent.VK_P) {
 			if (poweredUp) poweredUp = false;
