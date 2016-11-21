@@ -232,7 +232,7 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 				
 				//left&right boundaries for gun
 				if (Gun.x <= 0) Gun.x = 0;
-				if (Gun.x >= screenWidth * 9 / 10) Gun.x = screenWidth * 9 / 10;
+				if (Gun.x >= screenWidth - gunWidth) Gun.x = screenWidth - gunWidth;
 				
 				//win or lose
 				for (int i = 0; i < Bricks.length; i++) {//check each brick
