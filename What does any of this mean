@@ -94,7 +94,7 @@ Paint() runs whenever the repaint() method is called. It's called many times in 
       - if (controls): If controls is toggled true,
         - g.drawString("Controls: ", 70, 70);
 				- g.drawString("Left and Right: Move gun side to side.", 70, 100);
-			  - g.drawString("Up: Shoot bullet.", 70, 130);
+			 	- g.drawString("Up: Shoot bullet.", 70, 130);
 				- g.drawString("Shift: Pause/Unpause game.", 70, 160);
 				- g.drawString("Enter: Restart game.", 70, 190);
 				- g.drawString("P: Power up toggle (Ball speeds up).", 70, 220);
@@ -124,15 +124,23 @@ The run() method is where all the legit action happens. Each round represents 1 
     - while (!pause): While the game is not paused, 
       - dropCount += dropCountRate: For every loop, the dropCount increases by dropCountRate.
       - if (dropCount >= 1200): If dropCount passes 1200, 
-        - dropCount = 0: dropCount resets
-				- for (int i = 0; i < Bricks.length; i++): For every brick in the Bricks array.
-          - if (Bricks[i] != null): If the brick exists, 
-            - Bricks[i].y++: The y coordinate of the Brick increases by 1, dropping the brick by 1 pixel.
+      - dropCount = 0: dropCount resets
+			- for (int i = 0; i < Bricks.length; i++): For every brick in the Bricks array.
+        - if (Bricks[i] != null): If the brick exists, 
+        - Bricks[i].y++: The y coordinate of the Brick increases by 1, dropping the brick by 1 pixel.
       - for(int i = 0; i < Bullet.length; i++): For each bullet in the Bullet array,
         - if (Bullet[i] != null): If the bullet exists,
-          - if (poweredUp) Bullet[i].y -= screenHeight / 100: If powered up is toggled true, the bullet moves up by a 
-          - else Bullet[i].y -= screenHeight/200;
-				  - if (Bullet[i].y <= 0) Bullet[i] = null;
+          - if (poweredUp) Bullet[i].y -= screenHeight / 100: If powered up is toggled true, the bullet moves up by a 1% of the screenHeight.
+          - else Bullet[i].y -= screenHeight/200: If not powered up, bullet moves up at half the speed.
+				  - if (Bullet[i].y <= 0) Bullet[i] = null: If the bullet y value becomes less than 0 (bullet hit's the top of the screen), make that bullet = null.
+			- if (left == true): If the boolean left is true, 
+				- Gun.x -= screenWidth / 300: Gun moves left by a 300th of the screenWidth.
+				- right = false: right becomes false just incase player presses both right and left at the same time.
+			- else if (right == true): If the boolean right is true, 
+				- Gun.x += screenWidth / 300: Gun moves right by a 300th of the screenWidth.
+				- left = false: left becomes false just incase player presses both right and left at the same time.
+			- if (Gun.x <= 0) Gun.x = 0: If the x coordinate of the x value ends up becoming less than 0, bring it back to 0. 0 is the left boundary of the x coordinate.
+			- if (Gun.x >= screenWidth - gunWidth) Gun.x = screenWidth - gunWidth: If the x coordinate of the x value ends up becoming less than 0, bring it back to 0. 0 is the left boundary of the x coordinate.
   
   
   
