@@ -73,22 +73,33 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 	boolean poweredUp = false;
 	boolean gameStarted = false;
 	boolean controls = false;
-	private Image backgroundImage;
+	private Image backgroundImageLoss;
 	
-	private void getImage() {
+	public void initializeVariables(){
+		Gun.x = (screenWidth / 2) - (screenWidth / 20);
+		brickX = 0;
+		brickY = 0;
+		Bricks = new Brick[45];
+		Bullet = new Rectangle[25];
+		brickFellDown = false;
+		bricksOver = false;
+		count = 0;
+		dropCountRate = screenHeight / 2;
+		pause = true;
+		poweredUp = false;
+		gameStarted = false;
+	}
+	public void getImage() {
 		try {
-			backgroundImage = ImageIO.read(new File("/Users/masakiosato/Desktop/pepe.jpg"));
+			backgroundImageLoss = ImageIO.read(new File("/Users/masakiosato/Desktop/pepe.jpg"));
 		} catch (IOException e) {
 			System.out.println("Couldn't get backround image");
 		}
 	}
-	public BrickShooter() {
-		getImage();
-		setSize(screenWidth,screenHeight+22);
-	}
 	public static void main (String[] args) {
 		BrickShooter game = new BrickShooter();
 		JFrame frame = new JFrame();
+		game.getImage();
 		
 		//height+22 takes the top border into account
 		frame.setSize(screenWidth,screenHeight+22);
@@ -141,7 +152,6 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 					else g.setColor(Color.green);
 					g.fillRect(Bricks[i].x + 1, Bricks[i].y + 1, Bricks[i].width - 1, Bricks[i].height - 1);
 				}
-				
 			}
 			
 			//draw bullets if shot.
@@ -151,7 +161,7 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 			}
 			
 			if (pause) {
-				g.setColor(new Color(255, 255, 255, 175)); //80 is the opacity
+				g.setColor(new Color(255, 255, 255, 175)); //175 is the opacity
 				g.fillRect(0, 0, screenWidth, screenHeight);
 				g.setColor(Color.BLACK);
 				if (controls) {
@@ -181,7 +191,7 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 			//temp gg screen
 			g.setColor(Color.WHITE);
 			if (bricksOver) g.fillRect(0, 0, screenWidth, screenHeight);
-			else if (brickFellDown) g.drawImage(backgroundImage, 0, 0, screenWidth, screenHeight, this);
+			else if (brickFellDown) g.drawImage(backgroundImageLoss, 0, 0, screenWidth, screenHeight, this);
 			g.setColor(Color.BLUE);
 			g.drawString(status, 70, 100);
 			g.drawString("Press enter to play again.", 70, 130);
@@ -190,15 +200,6 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 	public void run() {
 		createBricks();
 		while (true) { //this loops still happens when the game is pause
-			//this repaint will allow us to have an interactive pause screen which i haven't done yet
-			repaint();
-			//try and catch is what accepts the KeyEvents.
-			//This one is specifically for when the game is paused.
-			try {
-				Thread.sleep(10);
-			} catch (Exception ex) {}
-			
-			
 			while (!pause) { //in game
 				//bricks falling
 				dropCount += dropCountRate;
@@ -271,6 +272,13 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 					Thread.sleep(10);
 				} catch (Exception ex) {}
 			}
+			//this repaint will allow us to have an interactive pause screen which i haven't done yet
+			repaint();
+			//try and catch is what accepts the KeyEvents.
+			//This one is specifically for when the game is paused.
+			try {
+				Thread.sleep(10);
+			} catch (Exception ex) {}
 		}
 	}
 	public void createBricks(){
@@ -286,22 +294,6 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 		initializeVariables();
 		createBricks();
 		repaint();
-	}
-	public void initializeVariables(){
-		Gun.x = (screenWidth / 2) - (screenWidth / 20);
-		brickX = 0;
-		brickY = 0;
-		Bricks = new Brick[45];
-		Bullet = new Rectangle[25];
-		brickFellDown = false;
-		bricksOver = false;
-		count = 0;
-		dropCountRate = 100;
-		status = null;
-		pause = true;
-		poweredUp = false;
-		gameStarted = false;
-		controls = false;
 	}
 	
 	public void actionPerformed(ActionEvent e) {}
