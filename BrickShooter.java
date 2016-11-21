@@ -9,7 +9,7 @@ Notes:
 
 Controls: 
 	- Left and Right: Move gun side to side.
-	- Up: Shoot bullet.
+	- Up or Space: Shoot bullet.
 	- Shift: Pause/Unpause game.
 	- Enter: Restart game.
 	- P: Power up toggle (Ball speeds up).
@@ -35,7 +35,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class BrickShooter extends JPanel implements KeyListener, ActionListener, Runnable {
+public class BrickShooter extends JPanel implements KeyListener, Runnable {
 	//board size. try to keep screenWidth a multiple of 300 min = 300, max = 6000
 	static int screenWidth = 900, screenHeight = screenWidth * 2 / 3;
 	//movement keys
@@ -167,7 +167,7 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 				if (controls) {
 					g.drawString("Controls: ", 70, 70);
 					g.drawString("Left and Right: Move gun side to side.", 70, 100);
-					g.drawString("Up: Shoot bullet.", 70, 130);
+					g.drawString("Up or Space: Shoot bullet.", 70, 130);
 					g.drawString("Shift: Pause/Unpause game.", 70, 160);
 					g.drawString("Enter: Restart game.", 70, 190);
 					g.drawString("P: Power up toggle (Ball speeds up).", 70, 220);
@@ -284,8 +284,6 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 	public void createBricks(){
 		for (int i = 0; i < Bricks.length; i++) {
 			Bricks[i] = new Brick(i % 15 * brickWidth , i / 15  * brickHeight, brickHeight, brickWidth, 3 - (i / 15));
-			brickX += brickWidth;
-			if (i % 15 == 14) brickX = 0;
 			if (Bricks[i].lives < 1) Bricks[i].lives = 1;
 		}
 	}
@@ -296,7 +294,6 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 		repaint();
 	}
 	
-	public void actionPerformed(ActionEvent e) {}
 	public void keyTyped(KeyEvent e) {}
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
@@ -325,11 +322,9 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 			else pause = true;
 			gameStarted = true;
 		}
-		if (keyCode == KeyEvent.VK_C) {
-			if (pause) {
-				if (controls) controls = false;
-				else controls = true;
-			}
+		if (keyCode == KeyEvent.VK_C && pause) {
+			if (controls) controls = false;
+			else controls = true;
 		}
 	}
 	public void keyReleased(KeyEvent e) {
