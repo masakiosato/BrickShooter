@@ -35,7 +35,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class BrickShooter extends JPanel implements KeyListener, ActionListener, Runnable, MouseListener {
+public class BrickShooter extends JPanel implements KeyListener, ActionListener, Runnable {
 	//board size. try to keep screenWidth a multiple of 300 min = 300, max = 6000
 	static int screenWidth = 900, screenHeight = screenWidth * 2 / 3;
 	//movement keys
@@ -109,7 +109,6 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 		frame.setLocationRelativeTo(null);
 		
 		//idk what this does but it won't work if i take it out
-		game.addMouseListener(game);
 		game.addKeyListener(game);
 		game.setFocusable(true);
 		Thread t = new Thread(game);
@@ -347,9 +346,4 @@ public class BrickShooter extends JPanel implements KeyListener, ActionListener,
 		if (keyCode == KeyEvent.VK_LEFT) left = false;
 		if (keyCode == KeyEvent.VK_RIGHT) right = false;
 	}
-	public void mouseClicked(MouseEvent e) {}
-	public void mousePressed(MouseEvent e) {}
-	public void mouseReleased(MouseEvent e) {}
-	public void mouseEntered(MouseEvent e) {}
-	public void mouseExited(MouseEvent e) {}
 }
