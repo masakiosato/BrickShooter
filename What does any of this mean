@@ -10,4 +10,26 @@ Brick(x coordinate of top left corner, y coordinate of top left corner, height, 
 
 --------------------------------------------------------------------------------------------------
 Now we go to the BrickShooter class which has everything else.
-After the comments, the imports, and the 
+After the comments, the imports, and the "public class BrickShooter extends JPanel implements KeyListener, ActionListener, Runnable {",
+you'll find a bunch of variables. 
+  Variables: 
+  - screenWidth: Preferrably a multiple of 300 due to the following variables that derive from screenWidth.  Minimum is 300 and Maximum is 6000.
+  - screenHeight: Always 2/3 of the screenHeight.
+  - right and left: Used for movement of the gun. If right is true, paddle goes right. A right/left keypress will make this true and a key release will put it back to false. 
+  - gunWidth: Always 1/10 of the screenWidth.
+  - gunHeight: Always 1/5 of the gunWidth.
+  - gunX: Initial starting x coordinate of the gun's top left corner. (screenWidth / 2) is the center x value of the screen. This will then be moved to the left by (gunWidth / 2). 
+  - gunY: The y coordinate of the gun's top left corner. Moved up by gunHeight from the bottom of the screen. 
+  - brickWidth: All brick widths are 1/15 of the screenWidth. There will always be 15 bricks in each row. 
+  - brickHeight: Always 2/3 of the brickWidth.
+  - brickX and brickY: The coordinates of the first brick. 
+  - bulletSize: Used for both height and width of the bullet.
+  - Gun: A rectangle with values determined earlier.
+  - Bricks: An array of bricks. Should contain a multiple of 15 bricks. 
+  - Bullet: An array of Rectangles. The number is the maximum number of shots possible at once. 
+  - brickFellDown and bricksOver: Win and Loss conditions. If one is true, the game will end. 
+  - shotCount: Number of bullets shot. Used to make new bullets in the array "Bullet".
+  - count: Number of broken bricks. If this number hits the number of original bricks, bricksOver becomes true and the game ends.
+  - dropCount: Starts off at zero. Increases by one for every frame (every time the run method loops).
+  - brickDrop: The levels of this game. Every time dropCount hits this value, the bricks will drop by one pixel and dropCount resets to 0. When brickDrop is a lower value, the
+ 
