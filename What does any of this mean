@@ -1,0 +1,13 @@
+/*
+
+Lets first start with the Brick class. 
+In java, a rectangle can be made with 4 parameters. 
+Its constructor is Rectangle(x coordinate of top left corner, y coordinate of top left corner, height, width).
+In order to make bricks with lives, I made a new object called a Brick, which is a subclass of Rectangle.
+This brick has everything a regular rectangle has except with a int life variable. 
+I also added a new constructor that just adds the new lives variable:
+Brick(x coordinate of top left corner, y coordinate of top left corner, height, width, lives.).
+
+--------------------------------------------------------------------------------------------------
+Now we go to the BrickShooter class which has everything else.
+After the comments, the imports, and the 
